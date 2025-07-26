@@ -1,5 +1,8 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document } from 'mongoose';
+import { Exclude } from 'class-transformer';
+import { Document, HydratedDocument } from 'mongoose';
+
+export type UserDocument = HydratedDocument<User>;
 
 @Schema({ timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' } })
 export class User extends Document {
@@ -22,6 +25,7 @@ export class User extends Document {
   phone: string;
 
   @Prop({ required: true })
+  @Exclude()
   password: string;
 }
 
