@@ -1,7 +1,8 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
 import { ActiveUser } from 'src/iam/decorators/active-user.decorator';
 import { ActiveUserInterface } from 'src/iam/interfaces/active-user';
 import { CreateOrderDto } from './dto/create-order.dto';
+import { FilterOrdersDto } from './dto/filter-orders.dto';
 import { OrdersService } from './orders.service';
 
 @Controller('orders')
@@ -14,6 +15,14 @@ export class OrdersController {
     @ActiveUser() user: ActiveUserInterface,
   ) {
     return this.ordersService.create(createOrderDto, user.sub);
+  }
+
+  @Get()
+  findAll(
+    @ActiveUser() user: ActiveUserInterface,
+    @Query() filters: FilterOrdersDto,
+  ) {
+    return this.ordersService.findAll(user.sub, filters);
   }
 
   @Get(':id')
