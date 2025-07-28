@@ -56,7 +56,7 @@ export class AuthenticationService {
 
   async refreshToken(userId: string) {
     const user = await this.usersService.findById(userId);
-    
+
     if (!user) {
       throw new UnauthorizedException('User not found');
     }
@@ -73,6 +73,8 @@ export class AuthenticationService {
       {
         sub: user._id,
         email: user.email,
+        name: user.name,
+        last_name: user.last_name,
       } as ActiveUserInterface,
       {
         audience: this.jwtConfiguration.audience,
