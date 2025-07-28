@@ -11,6 +11,7 @@ services:
       MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
       MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
       MONGO_INITDB_DATABASE: ${MONGO_INITDB_DATABASE}
+      TZ: UTC
 
     volumes:
       - mongodb_data:/data/db
@@ -25,8 +26,14 @@ services:
       - '3001:3000'
     environment:
       - NODE_ENV=${NODE_ENV}
-      - PORT=${PORT}
-      - MONGO_URI=${MONGO_URI}
+      - PORT=3000
+      - TZ=UTC
+      - APP_TIMEZONE=${APP_TIMEZONE}
+      - MONGO_URI=mongodb://admin:secret@mongodb:27017/boxful?authSource=admin
+      - JWT_SECRET=${JWT_SECRET}
+      - JWT_TOKEN_AUDIENCE=${JWT_TOKEN_AUDIENCE}
+      - JWT_TOKEN_ISSUER=${JWT_TOKEN_ISSUER}
+      - JWT_ACCESS_TOKEN_TTL=${JWT_ACCESS_TOKEN_TTL}
     depends_on:
       - mongodb
     networks:

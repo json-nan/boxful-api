@@ -1,98 +1,290 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# Boxful API
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+A NestJS-based REST API for Boxful application with MongoDB database and JWT authentication.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## 🚀 Quick Start with Docker
 
-## Description
+### Prerequisites
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+- [Docker](https://www.docker.com/get-started)
+- [Docker Compose](https://docs.docker.com/compose/install/)
 
-## Project setup
+### Setup & Run
 
-```bash
-$ npm install
+1. **Clone the repository**
+
+   ```bash
+   git clone <repository-url>
+   cd boxful-api
+   ```
+
+2. **Copy environment variables**
+
+   ```bash
+   cp .env.example .env
+   ```
+
+3. **Start the application**
+   ```bash
+   docker-compose up -d
+   ```
+
+That's it! 🎉 The API will be running at http://localhost:3001
+
+### What's Running?
+
+- **API**: http://localhost:3001 (NestJS application)
+- **MongoDB**: localhost:27017 (Database)
+- **Frontend can run on**: http://localhost:3000 (port 3000 is free)
+
+## 📋 Environment Configuration
+
+The `.env` file contains all necessary configuration:
+
+```env
+# MongoDB Configuration
+MONGO_INITDB_ROOT_USERNAME=admin
+MONGO_INITDB_ROOT_PASSWORD=secret
+MONGO_INITDB_DATABASE=boxful-api
+MONGO_URI=mongodb://admin:secret@localhost:27017/boxful?authSource=admin
+
+# Application Configuration
+NODE_ENV=development
+PORT=3001
+
+TZ=UTC
+APP_TIMEZONE=UTC-6
+
+# JWT Configuration
+JWT_SECRET=ed0130c8fe23cc6d9a7b8659e48f3ecd
+JWT_TOKEN_AUDIENCE=localhost:3001
+JWT_TOKEN_ISSUER=localhost:3001
+JWT_ACCESS_TOKEN_TTL=3600
 ```
 
-## Compile and run the project
+> ⚠️ **Security Note**: Change the `JWT_SECRET` in production. You can generate a new one at https://jwtsecrets.com/#generator
+
+## 🏗️ Architecture
+
+### Tech Stack
+
+- **Framework**: NestJS (Node.js)
+- **Database**: MongoDB with Mongoose ODM
+- **Authentication**: JWT tokens with bcrypt password hashing
+- **Validation**: class-validator & class-transformer
+- **Documentation**: Built-in with NestJS
+
+### Key Features
+
+- 🔐 **JWT Authentication** with refresh tokens
+- 👥 **User Management** (sign-up, sign-in)
+- 📦 **Orders Management** with date filtering
+- 🔍 **Advanced Filtering** with reusable QueryBuilder
+- 🛡️ **Guards & Decorators** for authorization
+- 🐳 **Docker** ready for development and production
+
+## 🔧 Available Commands
+
+### Docker Commands
 
 ```bash
-# development
-$ npm run start
+# Start all services
+docker-compose up -d
 
-# watch mode
-$ npm run start:dev
+# View logs
+docker-compose logs -f
 
-# production mode
-$ npm run start:prod
+# Stop all services
+docker-compose down
+
+# Rebuild and start
+docker-compose up -d --build
+
+# Reset database (removes all data)
+docker-compose down -v && docker-compose up -d
 ```
 
-## Run tests
+### Development Commands (if running without Docker)
+
+If you run without docker you need to change the `MONGO_URI` in `.env` to `mongodb://localhost:27017/boxful-api`. when is running in docker starts with `mongodb` but if you run without docker it should be `localhost`.
 
 ```bash
-# unit tests
-$ npm run test
+# Install dependencies
+npm install
 
-# e2e tests
-$ npm run test:e2e
+# Development mode
+npm run start:dev
 
-# test coverage
-$ npm run test:cov
+# Build
+npm run build
+
+# Production mode
+npm run start:prod
+
+# Testing
+npm run test           # unit tests
+npm run test:e2e       # e2e tests
+npm run test:cov       # test coverage
+
+# Code quality
+npm run lint           # ESLint
+npm run format         # Prettier
 ```
 
-## Deployment
+## 📚 API Endpoints
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+### Authentication
 
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+```
+POST /authentication/sign-up      # Register new user
+POST /authentication/sign-in      # Login user
+POST /authentication/refresh-token # Refresh access token
+```
+
+### Orders
+
+```
+GET    /orders                    # Get user orders (with filtering)
+POST   /orders                    # Create new order
+GET    /orders/:id                # Get specific order
+```
+
+### Query Parameters for Orders
+
+```
+# Date filtering
+GET /orders?date_from=2025-01-01&date_to=2025-01-31
+
+```
+
+## 🔐 Authentication
+
+### Request Headers
+
+```
+Authorization: Bearer <jwt_token>
+Content-Type: application/json
+```
+
+### Response Format
+
+```json
+{
+  "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+```
+
+## 🗄️ Database Schema
+
+### User Schema
+
+```typescript
+{
+  name: string;
+  last_name: string;
+  gender: string;
+  birth_date: Date;
+  email: string; // unique
+  phone: string;
+  password: string; // encrypted
+  created_at: Date;
+  updated_at: Date;
+}
+```
+
+### Order Schema
+
+```typescript
+{
+  pickup_address: string;
+  programmed_date: Date;
+  name: string;
+  last_name: string;
+  email: string;
+  phone: string;
+  deliver_address: string;
+  city: string;
+  municipality: string;
+  reference_place: string;
+  indications: string;
+  items: OrderItem[];
+  status: string;       // default: 'created'
+  user_id: ObjectId;    // reference to User
+  created_at: Date;
+  updated_at: Date;
+}
+```
+
+## 🛠️ Development
+
+### Project Structure
+
+```
+src/
+├── common/              # Shared utilities
+│   ├── builders/        # QueryBuilder for filtering
+│   ├── decorators/      # Custom decorators
+│   └── interfaces/      # Common interfaces
+├── iam/                 # Identity & Access Management
+│   ├── authentication/  # Auth service & controller
+│   ├── decorators/      # @ActiveUser, @Auth
+│   └── guards/          # Authentication guards
+├── orders/              # Orders module
+├── users/               # Users module
+├── schemas/             # MongoDB schemas
+└── main.ts             # Application entry point
+```
+
+### Adding New Modules
+
+The project follows NestJS modular architecture. Use the reusable components:
+
+```typescript
+// Use QueryBuilder for filtering
+const query = new QueryBuilder({ user_id: userId })
+  .addDateRange('created_at', filters.date_from, filters.date_to)
+  .addStringFilter('status', filters.status)
+  .build();
+```
+
+## 🐛 Troubleshooting
+
+### Common Issues
+
+**Port already in use**
 
 ```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
+# Kill process on port 3001
+lsof -ti:3001 | xargs kill -9
+
+# Or change port in .env file
+PORT=3002
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+**MongoDB connection failed**
 
-## Resources
+```bash
+# Recreate containers
+docker-compose down -v
+docker-compose up -d
+```
 
-Check out a few resources that may come in handy when working with NestJS:
+**JWT token invalid**
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+```bash
+# Check JWT configuration in .env
+# Ensure JWT_TOKEN_AUDIENCE and JWT_TOKEN_ISSUER match your setup
+```
 
-## Support
+### Logs
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+```bash
+# API logs
+docker-compose logs -f app
 
-## Stay in touch
+# MongoDB logs
+docker-compose logs -f mongodb
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+# All logs
+docker-compose logs -f
+```

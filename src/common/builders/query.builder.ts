@@ -1,3 +1,5 @@
+import { TimezoneUtil } from '../utils/timezone.util';
+
 export interface DateRangeFilter {
   $gte?: Date;
   $lte?: Date;
@@ -41,16 +43,10 @@ export class QueryBuilder {
 
   addDateRange(field: string, from?: string, to?: string): this {
     if (from || to) {
-      const dateFilter: DateRangeFilter = {};
-      if (from) {
-        const startDate = new Date(from + 'T00:00:00.000');
-        dateFilter.$gte = startDate;
+      const dateFilter = TimezoneUtil.createDateRangeFilter(from, to);
+      if (dateFilter) {
+        this.query[field] = dateFilter;
       }
-      if (to) {
-        const endDate = new Date(to + 'T23:59:59.999');
-        dateFilter.$lte = endDate;
-      }
-      this.query[field] = dateFilter;
     }
     return this;
   }
