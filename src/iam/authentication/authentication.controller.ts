@@ -1,4 +1,6 @@
 import { Body, Controller, HttpCode, Post } from '@nestjs/common';
+import { ActiveUser } from '../decorators/active-user.decorator';
+import { ActiveUserInterface } from '../interfaces/active-user';
 import { AuthenticationService } from './authentication.service';
 import { Auth } from './decorators/auth.decorator';
 import { SignInDto } from './dto/sign-in.dto';
@@ -27,6 +29,19 @@ export class AuthenticationController {
   @Post('sign-up')
   async signUp(@Body() data: SignUpDto) {
     const token = await this.authenticationService.signUp(data);
+
+    return {
+      access_token: token.accessToken,
+    };
+  }
+
+  @Auth(AuthType.Bearer)
+  @HttpCode(200)
+  @Post('refresh-token')
+  async refreshToken(@ActiveUser() user: ActiveUserInterface) {
+    const token = await this.authenticationService.refreshToken(
+      user.sub.toString(),
+    );
 
     return {
       access_token: token.accessToken,

@@ -54,6 +54,20 @@ export class AuthenticationService {
     return null;
   }
 
+  async refreshToken(userId: string) {
+    const user = await this.usersService.findById(userId);
+    
+    if (!user) {
+      throw new UnauthorizedException('User not found');
+    }
+
+    const accessToken = await this.generateAccessToken(user);
+
+    return {
+      accessToken,
+    };
+  }
+
   async generateAccessToken(user: UserDocument): Promise<string> {
     return this.jwtService.signAsync(
       {

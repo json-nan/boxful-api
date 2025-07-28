@@ -43,11 +43,11 @@ export class QueryBuilder {
     if (from || to) {
       const dateFilter: DateRangeFilter = {};
       if (from) {
-        const startDate = new Date(from + 'T00:00:00.000Z');
+        const startDate = new Date(from + 'T00:00:00.000');
         dateFilter.$gte = startDate;
       }
       if (to) {
-        const endDate = new Date(to + 'T23:59:59.999Z');
+        const endDate = new Date(to + 'T23:59:59.999');
         dateFilter.$lte = endDate;
       }
       this.query[field] = dateFilter;
