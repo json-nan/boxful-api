@@ -1,0 +1,47 @@
+version: '3.8'
+
+services:
+  mongodb:
+    image: mongo
+    container_name: boxful-mongodb
+    restart: always
+    ports:
+      - '27017:27017'
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
+      MONGO_INITDB_DATABASE: ${MONGO_INITDB_DATABASE}
+      TZ: UTC
+
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - boxful-network
+
+  app:
+    build: .
+    container_name: boxful-api
+    restart: unless-stopped
+    ports:
+      - '3001:3000'
+    environment:
+      - NODE_ENV=${NODE_ENV}
+      - PORT=3000
+      - TZ=UTC
+      - APP_TIMEZONE=${APP_TIMEZONE}
+      - MONGO_URI=mongodb://admin:secret@mongodb:27017/boxful?authSource=admin
+      - JWT_SECRET=${JWT_SECRET}
+      - JWT_TOKEN_AUDIENCE=${JWT_TOKEN_AUDIENCE}
+      - JWT_TOKEN_ISSUER=${JWT_TOKEN_ISSUER}
+      - JWT_ACCESS_TOKEN_TTL=${JWT_ACCESS_TOKEN_TTL}
+    depends_on:
+      - mongodb
+    networks:
+      - boxful-network
+
+volumes:
+  mongodb_data:
+
+networks:
+  boxful-network:
+    driver: bridge
